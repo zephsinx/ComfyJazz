@@ -61,8 +61,24 @@ Notes:
 
 ### YouTube
 
-ComfyJazz also supports YouTube live chat. However, the Live ID of the YouTube stream must be provided on server start.
-As the YouTube event listener run on the server-side, notes are triggered via websocket requests to the client-side.
+To integrate ComfyJazz with YouTube Live chat, you have two options:
+
+#### Streamer.bot Integration
+
+By connecting setting up [Streamer.bot](https://streamer.bot/) to your YouTube account, you can make ComfyJazz listen to
+events emitted by Streamer.bot when it detects a YouTube Live message.
+
+1. Set up [Streamer.bot](https://streamer.bot/) and log in with your YouTube account you use for streaming.
+2. Ensure your Streamer.bot WebSocket server is started, and using the default IP and Port.
+    1. ComfyJazz does not currently support custom WebSocket URLs and ports.
+3. Run the ComfyJazz from the command line.
+    1. `node index.js`
+4. Add a Browser Source to your broadcasting software (e.g. [OBS](https://obsproject.com/kb/browser-source)).
+5. In the URL field, enter `http://localhost:8901?useStreamerBot=true`
+    1. If you get an error, re-check your settings.
+6. Enjoy!
+
+#### Local WebSocket Integration
 
 > Note: The server must be started _after_ the YouTube stream has begun to have a valid stream Live ID. Future
 > improvements will attempt to remove this requirement.
@@ -74,6 +90,9 @@ As the YouTube event listener run on the server-side, notes are triggered via we
     2. `Listening on 8901`
         1. Where 8901 is the port that ComfyJazz is listening on.
 3. Add a Browser Source to your broadcasting software (e.g. [OBS](https://obsproject.com/kb/browser-source)).
-4. In the URL field, enter `http://localhost:8901?youtube=true`
+4. In the URL field, enter `http://localhost:8901?useWebsockets=true`
     1. `yourchannel` is not needed but doesn't hurt anything if kept.
 5. Enjoy!
+
+As the YouTube event listener run on the server-side, notes are triggered via websocket requests to the client-side.
+
