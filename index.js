@@ -1,13 +1,16 @@
 "use strict";
 
 const args = process.argv.slice(2);
+const youtubeArgIndex = args.indexOf('-y')
 const express = require('express');
 const path = require('path');
 
 const app = express();
 const PORT = process.env.PORT || 8901;
 
-configureYoutubeListener(args);
+if (youtubeArgIndex > -1) {
+    configureYoutubeListener(args);
+}
 
 app.use('/web', express.static(path.join(__dirname, '/web')));
 app.use((req, res) => res.sendFile('/index.html', {root: __dirname}))
@@ -18,23 +21,21 @@ function configureYoutubeListener(args) {
     const wss = new Server({port: process.env.WEBSOCKET_PORT || 443});
     let youtubeArgIndex = args.indexOf('-y')
 
-    if (youtubeArgIndex > -1) {
-        configureWebSocketServer(wss);
-        let liveId = args[youtubeArgIndex + 1];
-        if (!liveId)
-            return;
+    configureWebSocketServer(wss);
+    let liveId = args[youtubeArgIndex + 1];
+    if (!liveId)
+        return;
 
-        console.log(`Attempting connection to YouTube chat with Live ID: ${liveId}`);
-        const {LiveChat} = require("youtube-chat")
-        const liveChat = new LiveChat({liveId: liveId})
+    console.log(`Attempting connection to YouTube chat with Live ID: ${liveId}`);
+    const {LiveChat} = require("youtube-chat")
+    const liveChat = new LiveChat({liveId: liveId})
 
-        liveChat.on("chat", (chatItem) => {
-            wss.clients.forEach((client) => {
-                client.send('Play');
-            });
+    liveChat.on("chat", (chatItem) => {
+        wss.clients.forEach((client) => {
+            client.send('Play');
         });
-        liveChat.start();
-    }
+    });
+    liveChat.start();
 }
 
 function configureWebSocketServer(wss) {

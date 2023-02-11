@@ -7,8 +7,10 @@
             crossorigin="anonymous">
     </script>
     <script src="https://cdn.jsdelivr.net/npm/comfy.js@latest/dist/comfy.min.js"></script>
+    <script src="https://unpkg.com/@streamerbot/client/dist/streamerbot-client.js"></script>
     <script src="web/Constants.js"></script>
     <script src="web/ComfyJazz.js"></script>
+    <script src="web/SbClient.js"></script>
 
     <style>
         #comfy-controls {
@@ -48,6 +50,9 @@
     const playAutoNotes = params.get("playAutoNotes");
     const soundFolder = params.get("soundFolder");
     const volume = params.get("volume");
+    const maxNotes = params.get("maxNotes");
+    const useStreamerBot = params.get("useStreamerBot");
+    const useWebsockets = params.get("useWebsockets");
 
     //Start ComfyJazz
     const comfyJazz = ComfyJazz({
@@ -59,47 +64,50 @@
         playAutoNotes: playAutoNotes || defaultOptions.playAutoNotes,
         soundFolder: soundFolder || defaultOptions.soundFolder,
         volume: volume || defaultOptions.volume,
+        maxNotes: maxNotes || defaultOptions.maxNotes,
+        useStreamerBot: useStreamerBot || defaultOptions.useStreamerBot,
+        useWebsockets: useWebsockets || defaultOptions.useWebsockets,
     });
     comfyJazz.start();
 
     //Integrate with Twitch Chat
     const channel = params.get("channel");
-    const youtube = params.get("youtube");
 
     if (channel) {
         ComfyJS.onChat = (user, message, flags, self, extra) => {
-            comfyJazz.playNoteProgression();
+            comfyJazz.playNoteProgression(maxNotes);
         };
         ComfyJS.Init(channel);
     }
 
-    if (youtube) {
-        try {
-            const socket = new WebSocket("ws://localhost:443");
-            socket.onopen = function (e) {
-                console.log('WebSocket connection to server established');
-            };
+    try {
+        if (useStreamerBot) {
+            enableYTSounds();
+        } else if (useWebsockets) {
+                const socket = new WebSocket("ws://localhost:443");
+                socket.onopen = function (e) {
+                    console.log('WebSocket connection to server established');
+                };
 
-            socket.onmessage = function (event) {
-                let numNotes = comfyJazz.playNoteProgression();
-                console.log(`Playing ${numNotes} notes`);
-            };
+                socket.onmessage = function (event) {
+                    let numNotes = comfyJazz.playNoteProgression();
+                    console.log(`Playing ${numNotes} notes`);
+                };
 
-            socket.onclose = function (event) {
-                if (event.wasClean) {
-                    console.log('WebSocket connection closed cleanly')
-                } else {
-                    console.log('WebSocket connection did not close cleanly')
-                }
-            };
+                socket.onclose = function (event) {
+                    if (event.wasClean) {
+                        console.log('WebSocket connection closed cleanly')
+                    } else {
+                        console.log('WebSocket connection did not close cleanly')
+                    }
+                };
 
-            socket.onerror = function (error) {
-                console.log(error);
-            };
-        }
-        catch (err) {
-            console.log(err);
-        }
+                socket.onerror = function (error) {
+                    console.log(error);
+                };
+            }
+    } catch (err) {
+        console.log(err);
     }
 
     //Keydown triggers notes
@@ -109,7 +117,7 @@
             document.querySelector("#comfy-controls").classList.toggle("hide");
         } else {
             // comfyJazz.playNote();
-            comfyJazz.playNoteProgression((Math.random() * 8) >> 0);
+            comfyJazz.playNoteProgression(maxNotes);
         }
     });
 
