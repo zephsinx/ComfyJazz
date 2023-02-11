@@ -3,8 +3,9 @@ let client;
 
 async function enableYTSounds() {
     client = new StreamerbotClient({ immediate: false });
-    await client.connect();
-    client.on('YouTube.Message', () => {
-        comfyJazz.playNoteProgression(maxNotes);
+    client.connect().then(() => {
+        client.on('YouTube.Message', () => {
+            comfyJazz.playNoteProgression(maxNotes);
+        });
     });
 }

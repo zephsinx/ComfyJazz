@@ -10,7 +10,7 @@
     <script src="https://unpkg.com/@streamerbot/client/dist/streamerbot-client.js"></script>
     <script src="web/Constants.js"></script>
     <script src="web/ComfyJazz.js"></script>
-    <script src="web/SbClient.js" type="module"></script>
+    <script src="web/SbClient.js"></script>
 
     <style>
         #comfy-controls {
@@ -82,7 +82,7 @@
 
     try {
         if (useStreamerBot) {
-            await enableYTSounds();
+            enableYTSounds();
         } else if (useWebsockets) {
                 const socket = new WebSocket("ws://localhost:443");
                 socket.onopen = function (e) {
