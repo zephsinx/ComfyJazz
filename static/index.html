@@ -1,0 +1,133 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ComfyJazz</title>
+    <script
+            src="https://cdnjs.cloudflare.com/ajax/libs/howler/2.2.0/howler.min.js"
+            integrity="sha512-ALoawPS0JxHQ+8dGL7htZIlVNRaE/SN9gHD4G8pJJTi9H4BQ/3PjdvhggSGR34g00mvTPFkxQuveQUsJA5664Q=="
+            crossorigin="anonymous">
+    </script>
+    <script src="https://cdn.jsdelivr.net/npm/comfy.js@latest/dist/comfy.min.js"></script>
+    <script src="https://unpkg.com/@streamerbot/client/dist/streamerbot-client.js"></script>
+    <script src="js/Constants.js"></script>
+    <script src="js/ComfyJazz.js"></script>
+    <script src="js/SbClient.js"></script>
+
+    <style>
+        body {
+            margin: 0;
+            padding: 0;
+            background-color: transparent;
+            overflow: hidden;
+        }
+        #comfy-controls {
+            padding: 40px;
+            background-color: #ccc;
+            display: block;
+        }
+        #comfy-controls.hide {
+            display: none;
+        }
+    </style>
+</head>
+<body>
+<div id="comfy-controls" class="hide">
+    <h1>Comfy Jazz Control Panel</h1>
+    <label for="volume-control"
+    >Volume:
+        <input
+                type="range"
+                id="volume-control"
+                name="volume-control"
+                min="0"
+                max="1"
+                step="0.05"
+                onchange="onVolumeChange(event)"/>
+    </label>
+</div>
+<script>
+    // Load saved settings from localStorage if available
+    const savedSettings = localStorage.getItem('comfyJazzSettings');
+    let storedSettings = savedSettings ? JSON.parse(savedSettings) : {};
+    
+    const params = new URLSearchParams(location.search);
+
+    // URL parameters take precedence over stored settings
+    const autoNotesChance = params.get("autoNotesChance") || storedSettings.autoNotesChance;
+    const autoNotesDelay = params.get("autoNotesDelay") || storedSettings.autoNotesDelay;
+    const backgroundLoopUrl = params.get("backgroundLoopUrl") || storedSettings.backgroundLoopUrl;
+    const instrument = params.get("instrument") || storedSettings.instrument;
+    const playAutoNotes = params.get("playAutoNotes") || storedSettings.playAutoNotes;
+    const soundFolder = params.get("soundFolder") || storedSettings.soundFolder;
+    const volume = params.get("volume") || storedSettings.volume;
+    const maxNotes = params.get("maxNotes") || storedSettings.maxNotes;
+    const useStreamerBot = params.get("useStreamerBot") || storedSettings.useStreamerBot;
+    
+    // Create ComfyJazz configuration
+    const comfyJazzConfig = {
+        autoNotesChance: autoNotesChance || defaultOptions.autoNotesChance,
+        autoNotesDelay: autoNotesDelay || defaultOptions.autoNotesDelay,
+        backgroundLoopUrl: backgroundLoopUrl || defaultOptions.backgroundLoopUrl,
+        instrument: instrument || defaultOptions.instrument,
+        playAutoNotes: playAutoNotes || defaultOptions.playAutoNotes,
+        soundFolder: soundFolder || "sounds",
+        volume: volume || defaultOptions.volume,
+        maxNotes: maxNotes || defaultOptions.maxNotes,
+        useStreamerBot: useStreamerBot === "true" || defaultOptions.useStreamerBot
+    };
+
+    // Save current settings to localStorage
+    const saveSettings = () => {
+        localStorage.setItem('comfyJazzSettings', JSON.stringify(comfyJazzConfig));
+    };
+    saveSettings();
+
+    // Start ComfyJazz
+    const comfyJazz = ComfyJazz(comfyJazzConfig);
+    comfyJazz.start();
+
+    // Integrate with Twitch Chat
+    const channel = params.get("channel") || storedSettings.channel;
+    if (channel) {
+        ComfyJS.onChat = (user, message, flags, self, extra) => {
+            comfyJazz.playNoteProgression(maxNotes);
+        };
+        ComfyJS.Init(channel);
+        
+        // Save channel to settings
+        storedSettings.channel = channel;
+        localStorage.setItem('comfyJazzSettings', JSON.stringify(storedSettings));
+    }
+
+    // YouTube integration via Streamer.bot only
+    try {
+        if (useStreamerBot === "true") {
+            enableYTSounds();
+        }
+    } catch (err) {
+        console.log(err);
+    }
+
+    // Keydown triggers notes
+    window.addEventListener("keydown", (e) => {
+        // 'c' will open the control panel
+        if (e.code === "KeyC") {
+            document.querySelector("#comfy-controls").classList.toggle("hide");
+        } else {
+            comfyJazz.playNoteProgression(maxNotes);
+        }
+    });
+
+    function onVolumeChange(e) {
+        const newVolume = e.currentTarget.value;
+        comfyJazz.setVolume(newVolume);
+        
+        // Update stored settings
+        comfyJazzConfig.volume = newVolume;
+        saveSettings();
+    }
+</script>
+</body>
+</html> 
