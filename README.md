@@ -11,10 +11,9 @@ integration. Notes are played along randomly and for each chat message on your c
 
 - [Credits](#credits)
 - [Prerequisites](#prerequisites)
-- [Installing ComfyJazz](#installing-comfyjazz)
 - [Using ComfyJazz](#using-comfyjazz)
-    - [Twitch](#twitch)
-    - [YouTube](#youtube)
+  - [Twitch](#twitch)
+  - [YouTube](#youtube)
 
 ## Credits
 
@@ -23,76 +22,63 @@ original project. Instafluff can also be found on Twitch at [ttv/Instafluff](htt
 
 ## Prerequisites
 
-Before you begin, ensure you have met the following requirements:
+This is a static web application and doesn't require any server-side components or installations. You just need:
 
-- Download and install [Node.js](https://nodejs.org/en/download/) matching for your operating system.
-    - The LTS (Long-term Support) version is recommended for most users.
-
-## Installing ComfyJazz
-
-1. Navigate to the ComfyJazz folder.
-2. Run `npm install` to install required dependencies.
+- A web browser to access the HTML file
+- For streaming: broadcasting software like OBS with a Browser Source capability
 
 ## Using ComfyJazz
 
 ### Twitch
 
-1. Run the application from the command line.
-    1. `node index.js`
-2. You should see a message like `Listening on 8901`
-    1. Where 8901 is the port that ComfyJazz is listening on.
-3. Add a Browser Source to your broadcasting software (e.g. [OBS](https://obsproject.com/kb/browser-source)).
-4. In the URL field, enter `http://localhost:8901?channel=yourchannel`
-    1. Replace `yourchannel` with your Twitch username.
-5. Enjoy!
+1. Open the index.html file directly in your browser or host it on any static web server.
+2. Add a Browser Source to your broadcasting software (e.g. [OBS](https://obsproject.com/kb/browser-source)).
+3. In the URL field, enter the path to the index.html file with your channel parameter: `index.html?channel=yourchannel`
+    - Replace `yourchannel` with your Twitch username.
+4. Enjoy!
 
 Example:
 
 ```url
-http://localhost:8901?channel=zephsinx
+index.html?channel=zephsinx
 ```
-
-Notes:
-
-1. Keep the command prompt window open, as closing it will stop ComfyJazz.
-    1. If you would like ComfyJazz to run as a Windows service and not have to keep a command prompt
-       open, [NSSM](https://nssm.cc/download) can be used for this purpose.
-2. To stop the application, press `CTRL+C` in the command prompt window, or simply close the command prompt.
 
 ### YouTube
 
-To integrate ComfyJazz with YouTube Live chat, you have two options:
+To integrate ComfyJazz with YouTube Live chat, you can use [Streamer.bot](https://streamer.bot/):
 
 #### Streamer.bot Integration
 
-By connecting setting up [Streamer.bot](https://streamer.bot/) to your YouTube account, you can make ComfyJazz listen to
+By connecting [Streamer.bot](https://streamer.bot/) to your YouTube account, you can make ComfyJazz listen to
 events emitted by Streamer.bot when it detects a YouTube Live message.
 
 1. Set up [Streamer.bot](https://streamer.bot/) and log in with your YouTube account you use for streaming.
 2. Ensure your Streamer.bot WebSocket server is started, and using the default IP and Port.
-    1. ComfyJazz does not currently support custom WebSocket URLs and ports.
-3. Run the ComfyJazz from the command line.
-    1. `node index.js`
-4. Add a Browser Source to your broadcasting software (e.g. [OBS](https://obsproject.com/kb/browser-source)).
-5. In the URL field, enter `http://localhost:8901?useStreamerBot=true`
-    1. If you get an error, re-check your settings.
-6. Enjoy!
-
-#### Local WebSocket Integration
-
-> Note: The server must be started _after_ the YouTube stream has begun to have a valid stream Live ID. Future
-> improvements will attempt to remove this requirement.
-
-1. Run the application from the command line and provide your YouTube Live ID.
-    1. `node index.js -y YOUR_LIVE_ID`
-2. You should see the following messages:
-    1. `Attempting connection to YouTube chat with Live ID: YOUR_LIVE_ID`
-    2. `Listening on 8901`
-        1. Where 8901 is the port that ComfyJazz is listening on.
-3. Add a Browser Source to your broadcasting software (e.g. [OBS](https://obsproject.com/kb/browser-source)).
-4. In the URL field, enter `http://localhost:8901?useWebsockets=true`
-    1. `yourchannel` is not needed but doesn't hurt anything if kept.
+3. Open the index.html file in your browser or add it as a Browser Source in OBS.
+4. In the URL field, add the parameter: `?useStreamerBot=true`
 5. Enjoy!
 
-As the YouTube event listener run on the server-side, notes are triggered via websocket requests to the client-side.
+## Customization Options
 
+You can customize ComfyJazz by adding parameters to the URL:
+
+- `channel`: Your Twitch channel name
+- `autoNotesChance`: Probability (0.0-1.0) of auto-playing notes
+- `autoNotesDelay`: Delay between auto notes in milliseconds
+- `backgroundLoopUrl`: Custom background loop file
+- `instrument`: Instrument to use (default: piano)
+- `playAutoNotes`: Whether to play auto notes (true/false)
+- `volume`: Initial volume (0.0-1.0)
+- `maxNotes`: Maximum number of notes to play per chat message
+- `useStreamerBot`: Set to "true" to use Streamer.bot for YouTube integration
+
+Example:
+
+```url
+index.html?channel=yourchannel&volume=0.7&autoNotesChance=0.3
+```
+
+## Keyboard Controls
+
+- Press any key to play a note progression
+- Press 'c' to toggle the configuration panel
