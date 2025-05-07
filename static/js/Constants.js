@@ -1,6 +1,6 @@
 ﻿//Default property values, can be passed in and overridden
 const defaultOptions = {
-    soundFolder: "web/sounds",
+    soundFolder: "sounds",
     instrument: "piano",
     autoNotesDelay: 300, // How often should we try to play notes, in milliseconds?
     autoNotesChance: 0.2, // What % (0.0 - 1.0) chance is there to play an auto note?

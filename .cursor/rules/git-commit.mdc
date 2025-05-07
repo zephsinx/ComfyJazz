@@ -1,0 +1,72 @@
+---
+description: USE WHEN writing a Git commit message
+globs: 
+alwaysApply: false
+---
+# Git Commit Message Format
+
+## Overview
+This rule provides guidelines for writing clear, consistent, and informative Git commit messages.
+
+## Rules
+
+### 1. Structure
+- Separate subject from body with a blank line
+- Subject line should be a single line
+- Body should be wrapped at 72 characters
+- Use blank lines to separate paragraphs in the body
+
+### 2. Subject Line
+- Limit to 50 characters (72 max)
+- Start with a capital letter
+- Do not end with a period
+- Use imperative mood ("Add feature" not "Added feature")
+- Should complete the sentence: "If applied, this commit will [subject line]"
+
+### 3. Body Content
+- Explain WHAT and WHY, not HOW
+- Focus on the problem being solved
+- Include any side effects or important consequences
+- Use bullet points for multiple changes
+- Reference issue numbers if applicable
+
+## Examples
+
+### Good Example
+```
+Add user authentication system
+
+Implement JWT-based authentication to secure the application.
+This change includes:
+- User registration endpoint
+- Login endpoint with JWT generation
+- Protected route middleware
+
+Resolves: #123
+See also: #456
+```
+
+### Bad Examples
+```
+fixed bug (too vague)
+```
+```
+Added new feature (past tense, no details)
+```
+```
+WIP (work in progress, incomplete)
+```
+
+## Validation
+- Subject line should be 50 characters or less
+- Subject line should start with a capital letter
+- Subject line should not end with a period
+- Body should be wrapped at 72 characters
+- Commit message should not be empty
+
+## Tips
+- Write commit messages as if explaining to a future developer
+- Keep commits atomic (one logical change per commit)
+- Use present tense and imperative mood
+- Reference issue numbers when applicable
+- Explain the reasoning behind the change

@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ComfyJazz Static Test Page</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 20px;
+            line-height: 1.6;
+        }
+        h1, h2 {
+            color: #333;
+        }
+        .test-button {
+            background-color: #4CAF50;
+            border: none;
+            color: white;
+            padding: 10px 20px;
+            text-align: center;
+            text-decoration: none;
+            display: inline-block;
+            font-size: 16px;
+            margin: 10px 2px;
+            cursor: pointer;
+            border-radius: 4px;
+        }
+        .iframe-container {
+            width: 100%;
+            height: 200px;
+            margin: 20px 0;
+        }
+        iframe {
+            width: 100%;
+            height: 100%;
+            border: 1px solid #ddd;
+        }
+        code {
+            background-color: #f5f5f5;
+            padding: 2px 5px;
+            border-radius: 3px;
+            font-family: monospace;
+        }
+    </style>
+</head>
+<body>
+    <h1>ComfyJazz Static Implementation Test</h1>
+    <p>This page helps you verify that your static implementation of ComfyJazz is working properly.</p>
+    
+    <h2>Basic Functionality Test</h2>
+    <p>Click the button below to load ComfyJazz with default settings:</p>
+    <button class="test-button" onclick="loadComfyJazz('index.html')">Load Default ComfyJazz</button>
+    
+    <h2>Configuration Test</h2>
+    <p>Test ComfyJazz with custom parameters:</p>
+    <button class="test-button" onclick="loadComfyJazz('index.html?volume=0.5&autoNotesChance=0.4')">Load With Custom Volume & Note Chance</button>
+    
+    <h2>Preview</h2>
+    <div class="iframe-container">
+        <iframe id="comfyJazzFrame" src="about:blank"></iframe>
+    </div>
+    
+    <h2>Testing Checklist</h2>
+    <ul>
+        <li>✅ Background music plays automatically</li>
+        <li>✅ Random notes play occasionally</li>
+        <li>✅ Press any key to trigger note progressions</li>
+        <li>✅ Press 'c' to open the control panel</li>
+        <li>✅ Volume control works</li>
+        <li>✅ Settings are saved between refreshes</li>
+    </ul>
+    
+    <h2>Next Steps</h2>
+    <p>After confirming that the static version works:</p>
+    <ol>
+        <li>Upload the <code>static</code> folder contents to your web server</li>
+        <li>Add as a browser source in OBS using the URL to your hosted version</li>
+        <li>Add your Twitch channel as a parameter: <code>?channel=yourname</code></li>
+        <li>For YouTube, add Streamer.bot integration: <code>&useStreamerBot=true</code></li>
+    </ol>
+    
+    <script>
+        function loadComfyJazz(url) {
+            document.getElementById('comfyJazzFrame').src = url;
+        }
+    </script>
+</body>
+</html> 
